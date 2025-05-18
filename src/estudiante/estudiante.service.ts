@@ -10,10 +10,6 @@ export class EstudianteService {
     private readonly estudianteRepository: Repository<EstudianteEntity>,
   ) {}
 
-  async findAllEstudiantes(): Promise<EstudianteEntity[]> {
-    return this.estudianteRepository.find();
-  }
-
   async crearEstudiante(
     estudiante: EstudianteEntity,
   ): Promise<EstudianteEntity> {
@@ -28,7 +24,22 @@ export class EstudianteService {
     return this.estudianteRepository.save(estudiante);
   }
 
-  async eliminarEstudiante(id: number): Promise<void> {
+  async eliminarEstudiante(id: string): Promise<void> {
+    const estudiante = await this.estudianteRepository.findOne({
+      where: { id },
+      relations: ['proyectos'],
+    });
+
+    if (!estudiante) {
+      throw new BadRequestException('El estudiante no existe');
+    }
+
+    if (estudiante.proyectos && estudiante.proyectos.length > 0) {
+      throw new BadRequestException(
+        'No se puede eliminar el estudiante porque tiene proyectos activos',
+      );
+    }
+
     await this.estudianteRepository.delete(id);
   }
 }
