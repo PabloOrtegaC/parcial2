@@ -14,7 +14,10 @@ export class ProyectoService {
     return this.proyectoRepository.save(proyecto);
   }
 
-  async avanzarProyecto(id: number, proyecto: ProyectoEntity): Promise<ProyectoEntity> {
+  async avanzarProyecto(
+    id: number,
+    proyecto: ProyectoEntity,
+  ): Promise<ProyectoEntity> {
     await this.proyectoRepository.update(id, proyecto);
     const updatedProyecto = await this.proyectoRepository.findOne({
       where: { id: id.toString() },

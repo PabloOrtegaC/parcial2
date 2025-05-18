@@ -14,7 +14,10 @@ export class ProfesorService {
     return this.profesorRepository.save(profesor);
   }
 
-  async asignarEvaluador(id: number, profesor: ProfesorEntity): Promise<ProfesorEntity> {
+  async asignarEvaluador(
+    id: number,
+    profesor: ProfesorEntity,
+  ): Promise<ProfesorEntity> {
     await this.profesorRepository.update(id, profesor);
     const updatedProfesor = await this.profesorRepository.findOne({
       where: { id: id.toString() },

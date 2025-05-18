@@ -10,8 +10,9 @@ export class EvaluacionService {
     private readonly evaluacionRepository: Repository<EvaluacionEntity>,
   ) {}
 
-  async crearEvaluacion(evaluacion: EvaluacionEntity): Promise<EvaluacionEntity> {
+  async crearEvaluacion(
+    evaluacion: EvaluacionEntity,
+  ): Promise<EvaluacionEntity> {
     return this.evaluacionRepository.save(evaluacion);
   }
-
 }
