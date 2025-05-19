@@ -12,11 +12,13 @@ export class ProyectoService {
   ) {}
 
   async crearProyecto(proyecto: ProyectoEntity): Promise<ProyectoEntity> {
-    if (proyecto.presupuesto >= 0) {
+    console.log('Received proyecto:', proyecto); // Debug log
+
+    if (proyecto.presupuesto <= 0) {
       throw new BadRequestException('El presupuesto debe ser mayor a 0');
     }
 
-    if (proyecto.titulo.length >= 15) {
+    if (proyecto.titulo.length <= 15) {
       throw new BadRequestException(
         'El título debe tener más de 15 caracteres',
       );

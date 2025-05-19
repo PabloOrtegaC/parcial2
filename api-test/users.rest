@@ -1,17 +1,35 @@
-POST http://localhost:3000/users
+###
+POST http://localhost:3000/estudiantes
 Content-Type: application/json
 
 {
-  "name": "John Doe",
-  "email": "john@test.com",
-  "password": "password123"
+  "cedula": 123456789,
+  "nombre": "Juan",
+  "semestre": 5,
+  "programa": "Ingeniería de Sistemas",
+  "promedio": 4.5
 }
 
 ###
-GET http://localhost:3000/users
 
-
-###
-DELETE http://localhost:3000/users/1
+DELETE http://localhost:3000/estudiantes/dd7cfc8b-7ae5-462b-b376-020e4e23e52e
 
 ###
+POST http://localhost:3000/proyectos
+Content-Type: application/json
+
+{
+  "titulo": "Sistema de Gestión Académica",
+  "area": "Ingeniería de Software",
+  "presupuesto": 50000,
+  "notaFinal": 0,
+  "estado": 1,
+  "fechaInicio": "2025-05-01",
+  "fechaFin": "2025-12-01",
+  "estudiante": {
+    "id": "9efac3d6-0fb2-4df4-a091-8cb1b121dccc"
+  },
+  "profesor": {
+    "id": "82cf8b86-22f3-482e-8a5c-c06c5d763d7e"
+  }
+}
