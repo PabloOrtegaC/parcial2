@@ -1,0 +1,1112 @@
+{
+	"info": {
+		"_postman_id": "b81c8669-82d6-4f64-a86a-7f3ebb330086",
+		"name": "API - Gestión de Iniciativas Estudiantiles",
+		"description": "Este API fue desarrollado como parte de un sistema de gestión de iniciativas lideradas por estudiantes de pregrado, donde interactúan estudiantes, profesores y la decanatura de investigación. Permite crear, consultar y administrar proyectos, evaluaciones y usuarios del sistema siguiendo reglas de negocio específicas.\n\n<img src=\"https://content.pstmn.io/f5e2460a-9bc5-48a8-b5ee-738a9903e8da/aW1hZ2UucG5n\" alt=\"\" height=\"318\" width=\"837\">",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23162224"
+	},
+	"item": [
+		{
+			"name": "Estudiantes",
+			"item": [
+				{
+					"name": "Create estudiante",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"/**\r",
+									" * Postman Test Suite for Student Resource Creation\r",
+									" *\r",
+									" * This test suite validates the correctness and integrity of a POST (or similar) response \r",
+									" * when creating a student record. The following validations are performed:\r",
+									" *\r",
+									" * 1. Status Code 201:\r",
+									" *    Ensures that the API responds with HTTP status code 201, indicating that the student\r",
+									" *    resource was created successfully on the server.\r",
+									" *\r",
+									" * 2. Required Fields Check:\r",
+									" *    Verifies that the response includes all necessary fields: cedula, nombre, semestre,\r",
+									" *    programa, promedio, and id. This ensures that the API returns a complete and well-structured object.\r",
+									" *\r",
+									" * 3. Cedula Validation:\r",
+									" *    Checks that 'cedula' is a non-negative integer. This ensures the identifier is logically valid \r",
+									" *    and avoids issues caused by unexpected or invalid ID values.\r",
+									" *\r",
+									" * 4. Promedio Validation:\r",
+									" *    Confirms that 'promedio' (grade average) is a number within the acceptable academic range of 0 to 5. \r",
+									" *    This guarantees that the value is meaningful and prevents corruption of academic data.\r",
+									" */\r",
+									"\r",
+									"pm.test(\"Response status code is 201\", function () {\r",
+									"    pm.expect(pm.response.code).to.equal(201, \"The status code should indicate successful creation of a resource\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has the required fields - cedula, nombre, semestre, programa, promedio, and id\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseData).to.be.an('object', \"The response should be an object\");\r",
+									"    pm.expect(responseData.cedula).to.exist;\r",
+									"    pm.expect(responseData.nombre).to.exist;\r",
+									"    pm.expect(responseData.semestre).to.exist;\r",
+									"    pm.expect(responseData.programa).to.exist;\r",
+									"    pm.expect(responseData.promedio).to.exist;\r",
+									"    pm.expect(responseData.id).to.exist;\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Cedula is a non-negative integer\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseData).to.be.an('object', \"The response should be an object\");\r",
+									"    pm.expect(responseData.cedula).to.be.a('number', \"Cedula should be a number\");\r",
+									"    pm.expect(responseData.cedula).to.be.at.least(0, \"Cedula should be a non-negative integer\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Promedio is a number within a valid range\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseData).to.be.an('object', \"The response should be an object\");\r",
+									"    pm.expect(responseData.promedio).to.be.a('number', \"Promedio should be a number\");\r",
+									"    pm.expect(responseData.promedio).to.be.within(0, 5, \"Promedio should be within the range of 0 to 5\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"cedula\": 123456789,\r\n  \"nombre\": \"Nombre\",\r\n  \"semestre\": 5,\r\n  \"programa\": \"Carrera\",\r\n  \"promedio\": 4.5\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/estudiantes/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"estudiantes",
+								""
+							]
+						},
+						"description": "### POST /estudiantes/\n\nThis endpoint is used to create a new student record.\n\n#### Request Body\n\n- cedula (number): The identification number of the student.\n    \n- nombre (string): The name of the student.\n    \n- semestre (number): The semester in which the student is enrolled.\n    \n- programa (string): The academic program in which the student is enrolled.\n    \n- promedio (number): The average grade of the student.\n    \n\n#### Response\n\nThe response is in JSON format and follows the schema below:\n\n``` json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"cedula\": {\n      \"type\": \"number\"\n    },\n    \"nombre\": {\n      \"type\": \"string\"\n    },\n    \"semestre\": {\n      \"type\": \"number\"\n    },\n    \"programa\": {\n      \"type\": \"string\"\n    },\n    \"promedio\": {\n      \"type\": \"number\"\n    },\n    \"id\": {\n      \"type\": \"string\"\n    }\n  }\n}\n\n ```"
+					},
+					"response": [
+						{
+							"name": "Create estudiante",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"cedula\": 123456789,\r\n  \"nombre\": \"Nombre\",\r\n  \"semestre\": 5,\r\n  \"programa\": \"Carrera\",\r\n  \"promedio\": 4.5\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/estudiantes/",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"estudiantes",
+										""
+									]
+								}
+							},
+							"_postman_previewlanguage": "",
+							"header": [],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				},
+				{
+					"name": "Delete estudiante",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"/**\r",
+									" * Postman Test Suite for Resource Deletion or Empty Response Validation\r",
+									" *\r",
+									" * This test suite is designed to verify the correct behavior of an API endpoint\r",
+									" * that is expected to return an empty or null response (e.g., after a DELETE request\r",
+									" * or in the case of a resource with no content). It includes the following validations:\r",
+									" *\r",
+									" * 1. Status Code 200:\r",
+									" *    Confirms that the API responds with HTTP 200 OK, indicating a successful and\r",
+									" *    properly handled request, even if the response body is empty or null.\r",
+									" *\r",
+									" * 2. Response Time Performance:\r",
+									" *    Ensures that the request completes in under 200 milliseconds. This is important\r",
+									" *    for maintaining API performance standards and ensuring responsiveness in production environments.\r",
+									" *\r",
+									" * 3. Response Body is Null:\r",
+									" *    Validates that the XML response body, when converted to JSON, results in a null value.\r",
+									" *    This is useful in confirming that the server intentionally returns no data (for example,\r",
+									" *    after a deletion) and that the response format is consistent.\r",
+									" *\r",
+									" * 4. Schema Validation (Null Expected):\r",
+									" *    Ensures the response structure conforms to the expected schema, which in this case is null.\r",
+									" *    This reinforces the contract that the API should not return any structured data under this condition.\r",
+									" */\r",
+									"\r",
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body is null\", function () {\r",
+									"    const responseData = xml2Json(pm.response.text());\r",
+									"    pm.expect(responseData).to.be.null;\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response schema is as expected\", function () {\r",
+									"    const responseData = xml2Json(pm.response.text());\r",
+									"    pm.expect(responseData).to.be.null;\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "http://localhost:3000/estudiantes/:id/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"estudiantes",
+								":id",
+								""
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "6e71ee79-65cf-4cc0-ad66-6528235a4513"
+								}
+							]
+						},
+						"description": "### Delete Estudiante\n\nThis endpoint is used to delete a specific student by ID.\n\n#### Request\n\n- Method: DELETE\n    \n- URL: `http://localhost:3000/estudiantes/:id/`\n    \n\n#### Request Body\n\n- Type: x-www-form-urlencoded\n    \n- Parameters: None\n    \n\n#### Response\n\n- Status: 200\n    \n- Content Type: text/xml\n    \n\n#### Response Body (JSON Schema)\n\n``` json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"null\": {}\n  }\n}\n\n ```"
+					},
+					"response": [
+						{
+							"name": "Delete estudiante",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": []
+								},
+								"url": {
+									"raw": "http://localhost:3000/estudiantes/:id/",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"estudiantes",
+										":id",
+										""
+									],
+									"query": [
+										{
+											"key": "",
+											"value": null,
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "9efac3d6-0fb2-4df4-a091-8cb1b121dccc"
+										}
+									]
+								}
+							},
+							"_postman_previewlanguage": "",
+							"header": [],
+							"cookie": [
+								{
+									"expires": "Invalid Date"
+								}
+							],
+							"body": ""
+						}
+					]
+				}
+			],
+			"description": "Endpoints para gestionar estudiantes. Solo se permite registrar estudiantes con promedio mayor a 3.2 y semestre igual o superior a 4. No se permite eliminar estudiantes con proyectos activos."
+		},
+		{
+			"name": "Evaluaciones",
+			"item": [
+				{
+					"name": "Create evaluacion",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"/**\r",
+									" * Postman Test Suite for Successful Resource Creation (HTTP 201)\r",
+									" *\r",
+									" * This test suite validates the response from an API endpoint that creates a resource,\r",
+									" * such as a project or assignment. It checks for successful status codes, acceptable response times,\r",
+									" * and the presence of required fields in the response. These validations ensure the API\r",
+									" * is functioning correctly and returning expected output.\r",
+									" *\r",
+									" * 1. Status Code 201:\r",
+									" *    Ensures that the server returns a 201 Created status, confirming that the resource\r",
+									" *    was successfully created as a result of the request.\r",
+									" *\r",
+									" * 2. Response Time Check:\r",
+									" *    Verifies that the response is returned in less than 200 milliseconds. This helps enforce\r",
+									" *    performance standards for user responsiveness and service efficiency.\r",
+									" *\r",
+									" * 3. Response Property Validation:\r",
+									" *    Confirms that the JSON response includes the required fields: proyecto, profesor, and id.\r",
+									" *    These are essential to verify the completeness and correctness of the returned resource data.\r",
+									" */\r",
+									"\r",
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has the expected properties\", function () {\r",
+									"    const response = pm.response.json();\r",
+									"    pm.expect(response).to.have.property('proyecto');\r",
+									"    pm.expect(response).to.have.property('profesor');\r",
+									"    pm.expect(response).to.have.property('id');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"proyecto\": {\r\n    \"id\": \"17ccfe0e-8c2a-47cb-8c83-146d8fcc19de\"\r\n  },\r\n  \"profesor\": {\r\n    \"id\": \"e084d12b-4626-4cc5-b67b-2bf482a4b44d\"\r\n\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/evaluaciones/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"evaluaciones",
+								""
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						},
+						"description": "The endpoint `POST /evaluaciones/` is used to create a new evaluation. The request should include the `proyecto` and `profesor` objects with their respective IDs.\n\n### Request Body\n\n- `proyecto.id` (string): The ID of the project.\n    \n- `profesor.id` (string): The ID of the professor.\n    \n\n### Response\n\nThe response will be in JSON format with the following schema:\n\n``` json\n{\n    \"type\": \"object\",\n    \"properties\": {\n        \"message\": {\n            \"type\": \"string\"\n        },\n        \"error\": {\n            \"type\": \"string\"\n        },\n        \"statusCode\": {\n            \"type\": \"integer\"\n        }\n    }\n}\n\n ```"
+					},
+					"response": [
+						{
+							"name": "Create evaluacion",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"proyecto\": {\r\n    \"id\": \"17ccfe0e-8c2a-47cb-8c83-146d8fcc19de\"\r\n  },\r\n  \"profesor\": {\r\n    \"id\": \"df3f66ec-6501-480f-a482-ac7a14a4ae8d\"\r\n\r\n  }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/evaluaciones/",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"evaluaciones",
+										""
+									],
+									"query": [
+										{
+											"key": "",
+											"value": null,
+											"disabled": true
+										}
+									]
+								}
+							},
+							"_postman_previewlanguage": "",
+							"header": [],
+							"cookie": [
+								{
+									"expires": "Invalid Date"
+								}
+							],
+							"body": ""
+						}
+					]
+				}
+			],
+			"description": "Módulo para gestionar evaluaciones de proyectos. Valida que el evaluador no sea el mentor del proyecto y que la calificación esté entre 0 y 5."
+		},
+		{
+			"name": "Profesores",
+			"item": [
+				{
+					"name": "Create profesor",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"/**\r",
+									" * Postman Test Suite for Successful Evaluator Resource Creation (HTTP 201)\r",
+									" *\r",
+									" * This suite verifies the correctness and performance of the API endpoint responsible for creating\r",
+									" * an evaluator resource. It checks for proper status code, response structure, and data validity.\r",
+									" * The tests aim to ensure both functional correctness and adherence to expected API standards.\r",
+									" *\r",
+									" * 1. Status Code 201:\r",
+									" *    Confirms that the resource was successfully created by verifying the HTTP status code is 201.\r",
+									" *    This indicates the request was fulfilled and a new resource was added.\r",
+									" *\r",
+									" * 2. Required Fields Presence:\r",
+									" *    Ensures the response body contains all necessary fields: cedula, nombre, departamento,\r",
+									" *    extension, esParEvaluador, and id. This validates that the API is returning a complete object\r",
+									" *    with all expected attributes.\r",
+									" *\r",
+									" * 3. Cedula Validation:\r",
+									" *    Checks that the cedula field is a non-negative integer. Cedula is expected to be a numeric identifier,\r",
+									" *    and it must not be negative to maintain data integrity.\r",
+									" *\r",
+									" * 4. Extension Validation:\r",
+									" *    Validates that the extension field is present, is of type number, and is non-negative.\r",
+									" *    This ensures consistency and correctness of numerical extension data.\r",
+									" *\r",
+									" * 5. Response Time Check:\r",
+									" *    Confirms that the request is processed within 200 milliseconds, which supports performance and responsiveness\r",
+									" *    standards in production environments.\r",
+									" */\r",
+									"\r",
+									"pm.test(\"Response status code is 201\", function () {\r",
+									"    pm.expect(pm.response.code).to.equal(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has the required fields\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData).to.have.property('cedula');\r",
+									"    pm.expect(responseData).to.have.property('nombre');\r",
+									"    pm.expect(responseData).to.have.property('departamento');\r",
+									"    pm.expect(responseData).to.have.property('extension');\r",
+									"    pm.expect(responseData).to.have.property('esParEvaluador');\r",
+									"    pm.expect(responseData).to.have.property('id');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Cedula is a non-negative integer\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData.cedula).to.be.a('number').and.to.satisfy((value) => value >= 0, \"Cedula must be a non-negative integer\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Extension is a non-negative integer\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData.extension).to.exist.and.to.be.a('number');\r",
+									"    pm.expect(responseData.extension).to.be.at.least(0);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"cedula\": 123456789,\r\n  \"nombre\": \"Carlos Pérez\",\r\n  \"departamento\": \"Ingeniería de Sistemas\",\r\n  \"extension\": 12345,\r\n  \"esParEvaluador\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/profesores/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"profesores",
+								""
+							]
+						},
+						"description": "### Add Professor\n\nThis endpoint allows the client to add a new professor to the system.\n\n#### Request Body\n\n- cedula (number): The identification number of the professor.\n    \n- nombre (string): The name of the professor.\n    \n- departamento (string): The department to which the professor belongs.\n    \n- extension (number): The extension number of the professor.\n    \n- esParEvaluador (boolean): Indicates if the professor is a peer evaluator.\n    \n\n#### Response\n\nThe response is a JSON object with the following schema:\n\n``` json\n{\n    \"cedula\": number,\n    \"nombre\": string,\n    \"departamento\": string,\n    \"extension\": number,\n    \"esParEvaluador\": boolean,\n    \"id\": string\n}\n\n ```"
+					},
+					"response": [
+						{
+							"name": "Create profesor",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"cedula\": 123456789,\r\n  \"nombre\": \"Carlos Pérez\",\r\n  \"departamento\": \"Ingeniería de Sistemas\",\r\n  \"extension\": 12345,\r\n  \"esParEvaluador\": true\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/profesores/",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"profesores",
+										""
+									]
+								}
+							},
+							"_postman_previewlanguage": "",
+							"header": [],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				},
+				{
+					"name": "Asignar evaluador",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"/**\r",
+									" * Postman Test Suite for Successful GET Request (HTTP 200)\r",
+									" *\r",
+									" * This test suite is used to verify the basic success criteria of a GET request to an API endpoint.\r",
+									" * These tests help ensure that the API is reachable, responsive, and behaving as expected under normal conditions.\r",
+									" *\r",
+									" * 1. Status Code 200:\r",
+									" *    Validates that the API returns an HTTP 200 status, indicating a successful request and response.\r",
+									" *    This confirms the endpoint is functioning correctly and returning data as expected.\r",
+									" *\r",
+									" * 2. Response Time Check:\r",
+									" *    Ensures that the API responds within 500 milliseconds. Monitoring response time is crucial\r",
+									" *    to guarantee a smooth user experience and detect potential performance bottlenecks.\r",
+									" */\r",
+									"\r",
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 500ms\", function () {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(500);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/profesores/:id-profesor/evaluaciones/:id-evaluacion/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"profesores",
+								":id-profesor",
+								"evaluaciones",
+								":id-evaluacion",
+								""
+							],
+							"variable": [
+								{
+									"key": "id-profesor",
+									"value": "82cf8b86-22f3-482e-8a5c-c06c5d763d7e"
+								},
+								{
+									"key": "id-evaluacion",
+									"value": "11e34892-dd77-444c-b168-414280dcad9f"
+								}
+							]
+						},
+						"description": "The HTTP POST request is used to create a new evaluation for a specific professor. The request should be made to [http://localhost:3000/profesores/:id-profesor/evaluaciones/:id-evaluacion/](http://localhost:3000/profesores/:id-profesor/evaluaciones/:id-evaluacion/) with the necessary parameters."
+					},
+					"response": [
+						{
+							"name": "Asignar evaluador",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/profesores/:id-profesor/evaluaciones/:id-evaluacion/",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"profesores",
+										":id-profesor",
+										"evaluaciones",
+										":id-evaluacion",
+										""
+									],
+									"variable": [
+										{
+											"key": "id-profesor",
+											"value": "82cf8b86-22f3-482e-8a5c-c06c5d763d7e"
+										},
+										{
+											"key": "id-evaluacion",
+											"value": "11e34892-dd77-444c-b168-414280dcad9f"
+										}
+									]
+								}
+							},
+							"_postman_previewlanguage": "",
+							"header": [],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				}
+			],
+			"description": "Endpoints para gestionar profesores. Valida que la extensión tenga exactamente 5 dígitos. Solo se puede asignar como evaluador si tiene menos de 3 evaluaciones activas."
+		},
+		{
+			"name": "Proyectos",
+			"item": [
+				{
+					"name": "Create proyecto",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"/**\r",
+									" * Postman Test Suite for Proyecto Resource Creation (HTTP 201)\r",
+									" *\r",
+									" * This suite verifies the integrity and performance of the API endpoint responsible for creating\r",
+									" * a \"proyecto\" resource. It ensures the endpoint behaves correctly, returns all expected data,\r",
+									" * and performs within acceptable response time limits.\r",
+									" *\r",
+									" * 1. Status Code 201:\r",
+									" *    Confirms the API responds with an HTTP 201 status, indicating the resource was successfully created.\r",
+									" *    This verifies correct handling of POST requests and resource creation logic.\r",
+									" *\r",
+									" * 2. Required Fields Presence:\r",
+									" *    Checks that the response body contains all expected properties: titulo, area, presupuesto,\r",
+									" *    notaFinal, estado, fechaInicio, fechaFin, estudiante, profesor, and id.\r",
+									" *    This ensures completeness of the returned resource and conformance to the API contract.\r",
+									" *\r",
+									" * 3. Nested ID Validity:\r",
+									" *    Validates that both estudiante.id and profesor.id are non-empty strings.\r",
+									" *    This is important to confirm the integrity of nested relational data and proper association\r",
+									" *    with user entities.\r",
+									" *\r",
+									" * 4. Response Time Check:\r",
+									" *    Ensures that the response is returned in under 500 milliseconds.\r",
+									" *    This helps detect performance issues and supports responsive client-side interactions.\r",
+									" */\r",
+									"\r",
+									"pm.test(\"Response status code is 201\", function () {\r",
+									"  pm.expect(pm.response.code).to.equal(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has the required fields\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData.titulo).to.exist;\r",
+									"    pm.expect(responseData.area).to.exist;\r",
+									"    pm.expect(responseData.presupuesto).to.exist;\r",
+									"    pm.expect(responseData.notaFinal).to.exist;\r",
+									"    pm.expect(responseData.estado).to.exist;\r",
+									"    pm.expect(responseData.fechaInicio).to.exist;\r",
+									"    pm.expect(responseData.fechaFin).to.exist;\r",
+									"    pm.expect(responseData.estudiante).to.exist;\r",
+									"    pm.expect(responseData.profesor).to.exist;\r",
+									"    pm.expect(responseData.id).to.exist;\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Estudiante ID and Profesor ID are non-empty strings\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData.estudiante.id).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Estudiante ID should not be empty\");\r",
+									"    pm.expect(responseData.profesor.id).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Profesor ID should not be empty\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 500ms\", function () {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(500);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"titulo\": \"Sistema de Gestión Académica\",\r\n  \"area\": \"Ingeniería de Software\",\r\n  \"presupuesto\": 50000,\r\n  \"notaFinal\": 0,\r\n  \"estado\": 1,\r\n  \"fechaInicio\": \"2025-05-01\",\r\n  \"fechaFin\": \"2025-12-01\",\r\n  \"estudiante\": {\r\n    \"id\": \"9efac3d6-0fb2-4df4-a091-8cb1b121dccc\"\r\n  },\r\n  \"profesor\": {\r\n    \"id\": \"82cf8b86-22f3-482e-8a5c-c06c5d763d7e\"\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/proyectos/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"proyectos",
+								""
+							]
+						},
+						"description": "The POST request is used to create a new project under the endpoint [http://localhost:3000/proyectos/](http://localhost:3000/proyectos/). The request payload includes the project title, area, budget, final grade, status, start date, end date, student ID, and professor ID.\n\n### Request Body\n\n- titulo (string): The title of the project.\n    \n- area (string): The area of the project.\n    \n- presupuesto (number): The budget allocated for the project.\n    \n- notaFinal (number): The final grade of the project.\n    \n- estado (number): The status of the project.\n    \n- fechaInicio (string): The start date of the project.\n    \n- fechaFin (string): The end date of the project.\n    \n- estudiante.id (string): The ID of the student associated with the project.\n    \n- profesor.id (string): The ID of the professor associated with the project.\n    \n\n### Response\n\nThe response has a status code of 201 and a content type of application/json. The response body represents the newly created project with the following schema:\n\n``` json\n{\n  \"titulo\": \"\",\n  \"area\": \"\",\n  \"presupuesto\": 0,\n  \"notaFinal\": 0,\n  \"estado\": 0,\n  \"fechaInicio\": \"\",\n  \"fechaFin\": \"\",\n  \"estudiante\": {\n    \"id\": \"\"\n  },\n  \"profesor\": {\n    \"id\": \"\"\n  },\n  \"id\": \"\"\n}\n\n ```\n\nThis JSON schema represents the structure of the response body returned upon successful creation of a new project."
+					},
+					"response": [
+						{
+							"name": "Create proyecto",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"titulo\": \"Sistema de Gestión Académica\",\r\n  \"area\": \"Ingeniería de Software\",\r\n  \"presupuesto\": 50000,\r\n  \"notaFinal\": 0,\r\n  \"estado\": 1,\r\n  \"fechaInicio\": \"2025-05-01\",\r\n  \"fechaFin\": \"2025-12-01\",\r\n  \"estudiante\": {\r\n    \"id\": \"9efac3d6-0fb2-4df4-a091-8cb1b121dccc\"\r\n  },\r\n  \"profesor\": {\r\n    \"id\": \"82cf8b86-22f3-482e-8a5c-c06c5d763d7e\"\r\n  }\r\n}"
+								},
+								"url": {
+									"raw": "http://localhost:3000/proyectos/",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"proyectos",
+										""
+									]
+								}
+							},
+							"_postman_previewlanguage": "",
+							"header": [],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				},
+				{
+					"name": "Avanzar proyecto",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"/**\r",
+									" * Postman Test Suite for Retrieving a Proyecto Resource (HTTP 200)\r",
+									" *\r",
+									" * This test suite validates the correctness, completeness, and performance of a GET request\r",
+									" * that retrieves a \"proyecto\" resource. It ensures that both the structure and content\r",
+									" * of the response conform to the expected API contract.\r",
+									" *\r",
+									" * 1. Status Code 200:\r",
+									" *    Verifies that the API returns an HTTP 200 status, indicating that the request was successful\r",
+									" *    and the resource was retrieved correctly.\r",
+									" *\r",
+									" * 2. Required Fields Presence:\r",
+									" *    Confirms that the response object contains all the necessary properties: id, titulo, area,\r",
+									" *    presupuesto, notaFinal, estado, fechaInicio, and fechaFin. This ensures that the returned\r",
+									" *    resource is complete and meets the API specification.\r",
+									" *\r",
+									" * 3. Presupuesto Validation:\r",
+									" *    Ensures that the \"presupuesto\" field is a non-negative number. This check is important for\r",
+									" *    data integrity and to prevent logical errors in budget-related operations.\r",
+									" *\r",
+									" * 4. Date Format Validation:\r",
+									" *    Validates that the \"fechaInicio\" and \"fechaFin\" fields follow the YYYY-MM-DD format.\r",
+									" *    This guarantees consistency in date representation and compatibility with date parsers.\r",
+									" *\r",
+									" * 5. Response Time Check:\r",
+									" *    Ensures the request completes in under 200 milliseconds. Fast responses contribute to a\r",
+									" *    good user experience and help detect potential performance degradation.\r",
+									" */\r",
+									"\r",
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.equal(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has the required fields\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData.id).to.exist;\r",
+									"    pm.expect(responseData.titulo).to.exist;\r",
+									"    pm.expect(responseData.area).to.exist;\r",
+									"    pm.expect(responseData.presupuesto).to.exist;\r",
+									"    pm.expect(responseData.notaFinal).to.exist;\r",
+									"    pm.expect(responseData.estado).to.exist;\r",
+									"    pm.expect(responseData.fechaInicio).to.exist;\r",
+									"    pm.expect(responseData.fechaFin).to.exist;\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Presupuesto is a non-negative integer\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData.presupuesto).to.be.a('number');\r",
+									"    pm.expect(responseData.presupuesto).to.be.at.least(0, \"Presupuesto should be non-negative\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"FechaInicio and FechaFin are in a valid date format\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData.fechaInicio).to.match(/^\\d{4}-\\d{2}-\\d{2}$/);\r",
+									"    pm.expect(responseData.fechaFin).to.match(/^\\d{4}-\\d{2}-\\d{2}$/);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/proyectos/:id",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"proyectos",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "17ccfe0e-8c2a-47cb-8c83-146d8fcc19de"
+								}
+							]
+						},
+						"description": "The endpoint sends updates the state of a project to the next possible state.\n\n### Response\n\nThe response is in JSON format with the following schema:\n\n``` json\n{\n    \"id\": \"\",\n    \"titulo\": \"\",\n    \"area\": \"\",\n    \"presupuesto\": 0,\n    \"notaFinal\": 0,\n    \"estado\": 0,\n    \"fechaInicio\": \"\",\n    \"fechaFin\": \"\"\n}\n\n ```\n\nThis schema represents the structure of the project data returned after the update operation."
+					},
+					"response": [
+						{
+							"name": "Avanzar proyecto",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/proyectos/:id",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"proyectos",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "17ccfe0e-8c2a-47cb-8c83-146d8fcc19de"
+										}
+									]
+								}
+							},
+							"_postman_previewlanguage": "",
+							"header": [],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				},
+				{
+					"name": "Get estudiantes",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"/**\r",
+									" * Postman Test Suite for Retrieving a List of Students (HTTP 200)\r",
+									" * \r",
+									" * This suite validates the API response for fetching a collection of student records.\r",
+									" * It verifies the response status, structure, data integrity, and performance.\r",
+									" * \r",
+									" * 1. Status Code 200:\r",
+									" *    Confirms the API returns HTTP 200, indicating a successful retrieval of data.\r",
+									" * \r",
+									" * 2. Required Fields in Each Student Object:\r",
+									" *    Ensures that each student object in the response array contains the fields:\r",
+									" *    id, cedula, nombre, semestre, programa, and promedio.\r",
+									" *    This guarantees that the dataset is complete and matches the API specification.\r",
+									" * \r",
+									" * 3. Semestre Validation:\r",
+									" *    Checks that the 'semestre' field in each student object is a non-negative integer.\r",
+									" *    This prevents invalid or negative semester values, supporting data correctness.\r",
+									" * \r",
+									" * 4. Response Time:\r",
+									" *    Validates that the API response time is less than 200 milliseconds to maintain good performance.\r",
+									" */\r",
+									"\r",
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has the required fields - id, cedula, nombre, semestre, programa, and promedio\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('array');\r",
+									"    responseData.forEach(function(student) {\r",
+									"        pm.expect(student.id).to.exist;\r",
+									"        pm.expect(student.cedula).to.exist;\r",
+									"        pm.expect(student.nombre).to.exist;\r",
+									"        pm.expect(student.semestre).to.exist;\r",
+									"        pm.expect(student.programa).to.exist;\r",
+									"        pm.expect(student.promedio).to.exist;\r",
+									"    });\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Semestre is a non-negative integer\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('array');\r",
+									"    responseData.forEach(function(estudiante) {\r",
+									"        pm.expect(estudiante.semestre).to.be.a('number').and.to.be.at.least(0);\r",
+									"    });\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"titulo\": \"Sistema de Gestión Académica\",\r\n  \"area\": \"Ingeniería de Software\",\r\n  \"presupuesto\": 50000,\r\n  \"notaFinal\": 0,\r\n  \"estado\": 1,\r\n  \"fechaInicio\": \"2025-05-01\",\r\n  \"fechaFin\": \"2025-12-01\",\r\n  \"estudiante\": {\r\n    \"id\": \"9efac3d6-0fb2-4df4-a091-8cb1b121dccc\"\r\n  },\r\n  \"profesor\": {\r\n    \"id\": \"82cf8b86-22f3-482e-8a5c-c06c5d763d7e\"\r\n  }\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:3000/proyectos/:id/estudiantes/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"proyectos",
+								":id",
+								"estudiantes",
+								""
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "17ccfe0e-8c2a-47cb-8c83-146d8fcc19de"
+								}
+							]
+						},
+						"description": "### Get Proyecto Estudiantes\n\nThis endpoint retrieves a list of students associated with a specific project.\n\n#### Request\n\n`GET /proyectos/:id/estudiantes/`\n\n#### Response\n\nThe response is a JSON array containing objects with the following properties:\n\n- `id` (string): The unique identifier of the student.\n    \n- `cedula` (number): The identification number of the student.\n    \n- `nombre` (string): The name of the student.\n    \n- `semestre` (number): The semester in which the student is enrolled.\n    \n- `programa` (string): The academic program in which the student is enrolled.\n    \n- `promedio` (number): The academic average of the student.\n    \n\nExample:\n\n``` json\n[\n    {\n        \"id\": \"\",\n        \"cedula\": 0,\n        \"nombre\": \"\",\n        \"semestre\": 0,\n        \"programa\": \"\",\n        \"promedio\": 0\n    }\n]\n\n ```"
+					},
+					"response": [
+						{
+							"name": "Get estudiantes",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"titulo\": \"Sistema de Gestión Académica\",\r\n  \"area\": \"Ingeniería de Software\",\r\n  \"presupuesto\": 50000,\r\n  \"notaFinal\": 0,\r\n  \"estado\": 1,\r\n  \"fechaInicio\": \"2025-05-01\",\r\n  \"fechaFin\": \"2025-12-01\",\r\n  \"estudiante\": {\r\n    \"id\": \"9efac3d6-0fb2-4df4-a091-8cb1b121dccc\"\r\n  },\r\n  \"profesor\": {\r\n    \"id\": \"82cf8b86-22f3-482e-8a5c-c06c5d763d7e\"\r\n  }\r\n}"
+								},
+								"url": {
+									"raw": "http://localhost:3000/proyectos/:id/estudiantes/",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"proyectos",
+										":id",
+										"estudiantes",
+										""
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "17ccfe0e-8c2a-47cb-8c83-146d8fcc19de"
+										}
+									]
+								}
+							},
+							"_postman_previewlanguage": "",
+							"header": [],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				}
+			],
+			"description": "Permite registrar proyectos con reglas de validación sobre el título y presupuesto. Se puede avanzar el estado del proyecto (de 0 a 4) y consultar los estudiantes relacionados."
+		},
+		{
+			"name": "health",
+			"item": [
+				{
+					"name": "Hello world",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"cedula\": 123456789,\r\n  \"nombre\": \"Nombre\",\r\n  \"semestre\": 5,\r\n  \"programa\": \"Carrera\",\r\n  \"promedio\": 4.5\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:3000/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
